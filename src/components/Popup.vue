@@ -6,13 +6,14 @@
         <h2>Add a New Project</h2>
       </v-card-title>
       <v-card-text>
-        <v-form class="px-3">
-          <v-text-field v-model="title" label="Title" prepend-icon="folder"></v-text-field>
-          <v-textarea v-model="content" label="Information" prepend-icon="edit"></v-textarea>
+        <v-form class="px-3" ref="form">
+          <v-text-field v-model="title" label="Title" prepend-icon="folder" :rules="inputRules"></v-text-field>
+          <v-textarea v-model="content" label="Information" prepend-icon="edit" :rules="inputRules"></v-textarea>
 
           <v-menu v-model="menu" :close-on-content-click="false">
             <v-text-field
               slot="activator"
+              :rules="inputRules"
               :value="formattedDate"
               clearable
               label="Due date"
@@ -38,12 +39,18 @@ export default {
       title: "",
       content: "",
       due: null,
-      menu: false
+      menu: false,
+      inputRules: [
+        v => !!v || "This field is required",
+        v => v.length >= 3 || "Minimum length is 3 characters"
+      ]
     };
   },
   methods: {
     submit() {
-      console.log(this.title, this.content);
+      if (this.$refs.form.validate()) {
+        console.log(this.title, this.content);
+      }
     }
   },
   computed: {
